@@ -1,0 +1,59 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Aug 17 14:50:04 2022
+@author: Everton Castro
+"""
+from re import sub
+
+def SomadorCnpjPart1(CNPJ):
+    CNPJTEMP = sub(r'[^0-9]', '', CNPJ)
+    CNPJTEMP = CNPJTEMP[:-2]
+    soma = 0
+    for i, l in enumerate(CNPJTEMP, -5):
+        soma += int(l) * (i*(-1))
+        if i == -2:
+            for a, b in enumerate(CNPJTEMP[4:], -9):
+                soma += int(b) * (a*(-1))
+            break
+    return soma
+
+def SomadorCnpjPart2(CNPJ):
+    CNPJTEMP = sub(r'[^0-9]', '', CNPJ)
+    CNPJTEMP = CNPJTEMP[:-1]
+    soma = 0
+    for i, l in enumerate(CNPJTEMP, -6):
+        soma += int(l) * (i*(-1))
+        if i == -2:
+            for a, b in enumerate(CNPJTEMP[5:], -9):
+                soma += int(b) * (a*(-1))
+            break
+    return soma
+
+def Validador(CNPJ):
+    CNPJTEMP = sub(r'[^0-9]', '', CNPJ.strip())
+    if len(CNPJTEMP) == 14:
+        Penultimo = DoisUltimos(SomadorCnpjPart1(CNPJ))
+        Ultimo = DoisUltimos(SomadorCnpjPart2(CNPJ))
+        if CNPJTEMP[12:] == Penultimo + Ultimo:
+            #print('ok')
+            return True
+            
+        else: 
+            #print(':(')
+            return False
+            
+    elif len(CNPJTEMP) > 14:
+        raise ValueError(f'o Tamanho de um Cnpj é 14 e o seu está: {len(CNPJTEMP)}')
+    elif len(CNPJTEMP) < 14:
+        raise ValueError(f'o Tamanho de um Cnpj é 14 e o seu está: {len(CNPJTEMP)}')
+    
+def DoisUltimos(soma):
+    comparador = 11 - (soma % 11) 
+    if comparador > 9:
+        return '0'
+    else:
+        return str(comparador)
+
+
+if __name__ == '__main__':
+    Validador('40.688.134/0001-61')
